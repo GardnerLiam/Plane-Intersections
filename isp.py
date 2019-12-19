@@ -31,7 +31,7 @@ def Point(V, P, R):
 def Line(R):
     return [Fraction(2*R[1] - R[2], R[0]), -2, 1]
 
-def test(line, P):
+def testLine(line, P):
     points = np.array(line)
     points2 = np.array(line)*3
     print(np.dot(P[:-1], points), np.dot(P[:-1], points2))
@@ -83,11 +83,9 @@ pt = Point(V,P,R)
 ln = Line(R)
 sln = [str(i) for i in ln]
 
-print(tuple([str(i) for i in pt]))
-print("t{}".format(ln))
-print()
-test(ln, R)
-test(ln, K)
+print(tuple([str(i).replace("'", "") for i in pt]))
+print("t{}".format(sln).replace("'", ""))
+
 #plot(V, ax)
 #plot(P, ax)
 #plot(R, ax)
