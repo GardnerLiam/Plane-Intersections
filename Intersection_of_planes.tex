@@ -1,0 +1,128 @@
+\documentclass[a4paper, 12pt]{article}
+\author{Liam Gardner}
+\date{\today}
+\title{Intersection of Planes}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\begin{document}
+\newcommand{\plane}[4]{\left[#1, \: #2, \: #3\; | \; #4\right]}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+Using six planes, the five main types of intersections can be generated. This is assuming only two distinct and parallel planes. These planes are created with a total of 12 uniquely generated coefficients and elevation constants. A plane is defined by four constants: x-y-z multiples and an \textit{elevation constant}. The elevation constant is the term to which a plane equation is set equal to. Its name comes from the fact that should the x-y-z multiples of two planes be equal, and the constants unequal, one plane will seem elevated over the other. A plane can thus be represented in the form $V = \plane{A}{B}{C}{D}$ where $V$ is the plane, A, B and C are the x-y-z multiples and D is the elevation constant. Each component can be accessed respectively using subscripts. The x-y-z multiples being accessed by sub-scripting the component, and the elevation constant being accessed by a sub-scripted e. $V_e = D$. $\vec{V_n}$ will sometimes be used to refer to the normal vector of $V$.
+\section{Point Intersection}
+Given a plane $V=\plane{p_1}{p_2}{p_3}{1}$ where $p_1$, $p_2$ and $p_3$ each represent prime numbers, a perpendicular plane can be defined using the function:
+\begin{equation}
+	T(V) = \plane{-V_yR_0 - V_zR_1}{V_xR_0}{V_xR_1}{V_e+1}
+\end{equation}
+Where $R_n$ is the $n$th randomly generated number. 
+Given our original plane $V$, another plane $P$ can be defined using the function. $P=T(V)$ Given this scenario, since the x-y-z multiples of $P$ require the generation of random numbers, the components are considered to be unique, whereas the elevation constant is not. Another plane can now be defined using the coefficients of the first two. A plane $R$ is defined as $R=\plane{V_x}{P_y}{V_z}{0}$. This definition again provides no new coefficients and is thus not considered to be uniquely defined. Given how $P$ is perpendicular to $V$, and how $R$ is not parallel to either plane, the intersection type will be that of a point.
+\subsection{Calculating the point}
+Given a matrix of coefficients, calculating the inverse, and the dot product of that inverse with a column vector of elevation constants would return the points to which the planes intersect.
+$$\begin{pmatrix}
+	V_x & V_y & V_z \\
+	P_x & P_y & P_z \\
+	V_x & P_y & V_z
+\end{pmatrix}^{-1} = 
+\begin{bmatrix}
+	V_x & V_y & V_z & | & 1 & 0 	& 0 \\
+	P_x & P_y & P_z & | & 0 & 1 & 0 \\
+	V_x & P_y & V_z & | & 0 & 0 & 1
+\end{bmatrix}
+$$
+Reducing the matrix to row echelon form provides the matrix
+$$
+\begin{bmatrix}
+	V_x & P_y & V_z & | & 0 & 0 	& 1 \\
+	0 & V_y - P_y & 0 & | & 1 & 0 & -1 \\
+	0 & 0 & \frac{V_xP_z - V_zP_x}{V_x} & | & -\frac{V_xP_y - P_xP_y}{V_x(V_y-P_y)} & 0 & \frac{V_xP_y - P_xP_y}{V_x(V_y-P_y)}
+\end{bmatrix}
+$$
+Reducing the row echelon form creates the identity matrix on the left and provides the resulting inverse matrix on the right.
+$$
+\begin{bmatrix}
+1 & 0 & 0 & | & \frac{P_y(V_z - P_z)}{(V_y-P_y)(V_xP_z-V_zP_x)} & \frac{-V_z}{V_xP_z-V_zP_x} & \frac{-V_xP_z - V_zP_y}{(V_y-P_y)(V_xP_z-V_zP_x)} \\\\
+0 & 1 & 0 & | & \frac{1}{V_y-P_y} & 0 & \frac{-1}{V_y-P_y} \\\\
+0 & 0 & 1 & | & -\frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)} & \frac{V_x}{V_xP_z-V_zP_x} & \frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)}
+\end{bmatrix}
+$$
+Thus, the resulting inverse matrix is
+$$
+\begin{pmatrix}
+\frac{P_y(V_z - P_z)}{(V_y-P_y)(V_xP_z-V_zP_x)} & \frac{-V_z}{V_xP_z-V_zP_x} & \frac{-V_xP_z - V_zP_y}{(V_y-P_y)(V_xP_z-V_zP_x)} \\\\
+\frac{1}{V_y-P_y} & 0 & \frac{-1}{V_y-P_y} \\\\
+-\frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)} & \frac{V_x}{V_xP_z-V_zP_x} & \frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)}
+\end{pmatrix}
+$$
+Taking the dot product of the inverse matrix with the column vector of elevation constants will produce the formula to calculate the intersection point.
+$$
+\begin{pmatrix}
+\frac{P_y(V_z - P_z)}{(V_y-P_y)(V_xP_z-V_zP_x)} & \frac{-V_z}{V_xP_z-V_zP_x} & \frac{-V_xP_z - V_zP_y}{(V_y-P_y)(V_xP_z-V_zP_x)} \\\\
+\frac{1}{V_y-P_y} & 0 & \frac{-1}{V_y-P_y} \\\\
+-\frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)} & \frac{V_x}{V_xP_z-V_zP_x} & \frac{V_xP_y - P_zP_y}{(V_xP_z-V_zP_x)(V_y-P_y)}
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+1 \\\\ 2 \\\\ 0
+\end{pmatrix}
+$$
+This result creates the following formula to calculate the points.
+$$x = \frac{2V_yV_z - 3P_yV_z + P_yP_z}{(V_y-P_y)(V_zP_x-V_xP_z)}$$
+$$y = \frac{1}{V_y-P_y}$$
+$$z = \frac{-2V_xV_y + 3V_xP_y - P_xP_y}{(V_y-P_y)(V_zP_x-V_xP_z)}$$
+$$
+\begin{pmatrix}
+\frac{2V_yV_z - 3P_yV_z + P_yP_z}{(V_y-P_y)(V_zP_x-V_xP_z)} &
+\frac{1}{V_y-P_y} &
+\frac{-2V_xV_y + 3V_xP_y - P_xP_y}{(V_y-P_y)(V_zP_x-V_xP_z)}
+\end{pmatrix}
+$$
+\section{Creating Lines}
+Three (or four) more planes can now be defined using $V$, $P$ and $R$. These planes will create the intersection of all lines. Given the following altered definition of vector component addition, distinguished by the circular addition
+\begin{equation}
+	\left[x,y,z\right]\oplus\left[a,b,c\right]=\left[x+a, y+b, z+c\right]
+\end{equation}
+the plane $Q$ can be defined as $R\oplus\left[0,1,2\right]$, with both planes having an elevation constant of zero. This again allows for the reuse of previously defined coefficients, meaning $Q$ is not a uniquely defined plane. Given that, another plane $K$ can be defined as $T(\vec{R_n}\times\vec{Q_n}|-1)$ (The notation used when calling the function represents a plane with the normal vector being the result of the cross product, and an elevation constant of -1). $K$ will also have an elevation constant of zero. The function used to generate perpendicularity can be derived from the dot product. As a result, $\vec{K_n}\cdot\vec{R_n}\times\vec{Q_n} = 0$. This means that the normal vectors are coplanar, and the planes will intersect at one line. Since the elevation constants are zero, the origin remains a point on the line. Thus, the equation for the line of intersection will be made of a vector multiple of some independent variable $t$. 
+$$R = \plane{A}{B}{C}{0}$$
+$$Q = \plane{A}{B+1}{C+2}{0}$$
+$$\vec{R_n}\times\vec{Q_n} = [2B-C, -2A, A]$$
+$$K = T(\vec{R_n}\times\vec{Q_n}|-1)$$
+$$K = \plane{-a(2R_2+R_3)}{R_2(2B-C)}{R_3(2B-C)}{0}$$
+Subtracting the scalar equation for $Q$ by that of $R$ produces the equation
+$$y + 2z = 0$$
+Letting $z=t$ produces $y=-2t$.
+From there, substituting $y=-2t$ and $z=t$ into $R$ allows for the isolation of $x$
+$$x=\frac{t}{A}(2B-C)$$.
+The vector equation for the line of intersection is thus
+\begin{equation}
+    \begin{bmatrix}
+    x & y & z
+    \end{bmatrix}
+    = t
+    \begin{bmatrix}
+        \frac{2B-C}{A} & -2 & 1
+    \end{bmatrix}
+\end{equation}
+Since the origin is known to exist as a point of all intersections, substituting a point $t=1$ into the plane $K$ should produce the equality $0=0$ signifying its existence.
+\newline
+the point at $t=1$ is equal to 
+$\begin{pmatrix}
+    \frac{2B-C}{A} & -2 & 1
+\end{pmatrix}$ When inscribed into $K$, produces the following equation
+$$(2R_2+R_3)(2B-C) + 2R_2(2B_C) + R_3(2B-C) = 0$$
+$$(2B-C)((2R_2 + R_3) + 2R_2 + R_3) = 0$$
+$$(2B-C)(0) = 0$$
+$$0=0$$
+It is therefore true that the vector line equation (3) exists on the plane $K$. Thus, the line intersects all three planes.
+\subsection{Two lines}
+A plane $L$ can be defined using the same normal vector as $K$, except given an elevation constant of 1. This plane will automatically intersect with all previously defined planes (except $K$) producing various examples of two lines created from the intersecting of three planes.
+\subsection{Three lines}
+Much like how the intersection of one line was calculated, since $L$ is congruent to $K$, it will also share the coplanar normals with $R$ and $Q$. However, as a result of the elevation constant, instead of a single line of intersection, there will be three. This can be seen at the end of Section 3, after substituting $t=1$ into the plane, where the left side equals zero and the right side would equal 1. This inequality disproves the existence of the line on that third plane. Thus, three lines of intersection must exist.
+\section{Distinct Parallel planes}
+The two defined planes $L$ and $K$ are parallel and distinct to each other. In case one other plane is required to meet the criteria, another plane $G$ can be defined sharing the same normal vector as $L$ and $K$, except having an elevation constant equal to $-L_e$, the negative of the elevation constant of plane $L$. 
+\section{Conclusion}
+Using six (or seven) planes, and a total of 12 unique coefficients, the generation of intersecting planes can be easily defined. All planes satisfy the five unique intersections. This layout can be used to provide the structural generation of objects containing such intersections. The shape of the overall object is controlled by the coefficients of the first plane $V$. As a result, since most programming languages contain a pseudo-random library and are capable of using \textit{seeds}, one may procedural generate object by controlling the random variables, and by altering the starting prime index.
+\end{document}
